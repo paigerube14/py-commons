@@ -78,6 +78,7 @@ class Matcher:
         query = Q(
             "bool",
             must=[
+                Q("match", jobStatus="success"),
                 Q(
                     "match", **{field: str(value)}
                 )   if isinstance(value, str) else Q('match', **{field: value})
@@ -85,8 +86,7 @@ class Matcher:
                 if field not in "ocpVersion"
             ],
             filter=[
-                Q("wildcard", ocpVersion=f"{version}*"),
-                Q("match", jobStatus="success"),
+                Q("wildcard", ocpVersion=f"{version}*")  
             ],
         )
         s = Search(using=self.es, index=index).query(query).extra(size=self.search_size)
